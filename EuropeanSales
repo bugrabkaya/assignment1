@@ -1,0 +1,131 @@
+#import libraries
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn import linear_model
+import seaborn as sb
+from matplotlib import style
+import statsmodels.api as sm
+from termcolor import colored as cl
+
+#Loading European Sales dataset
+df=pd.read_csv("C:/Users/bugra\Desktop/BAU Big Data/Marketing Analytics/EuropeanSales.csv")
+
+# Checking the data
+# print(df)
+
+# Removing character columns
+df.drop(['Country'], axis=1, inplace= True)
+# print(df)
+
+# Plotting relationships between the dependent variable Sales Per Capita and independent variables
+# Population and Sales Per Capita
+plt.scatter(x = 'Population', y = 'SalesPerCapita', data = df, s = 100, alpha = 0.3, edgecolor = 'white')
+plt.title('Population vs SalesPerCapita', fontsize = 16)
+plt.ylabel('Sales Per Capita', fontsize = 12)
+plt.xlabel('Population', fontsize = 12)
+
+plt.savefig('population_sales.png')
+
+# GDPperHead vs SalesPerCapita
+plt.scatter(x = 'GDPperHead', y = 'SalesPerCapita', data = df, s = 100, alpha = 0.3, edgecolor = 'white')
+plt.title('GDP per Head vs SalesPerCapita', fontsize = 16)
+plt.ylabel('Sales Per Capita', fontsize = 12)
+plt.xlabel('GDP per Head', fontsize = 12)
+
+plt.savefig('gdp_sales.png')
+
+# UnemploymentRate vs SalesPerCapita
+plt.scatter(x = 'UnemploymentRate', y = 'SalesPerCapita', data = df, s = 100, alpha = 0.3, edgecolor = 'white')
+plt.title('UnemploymentRate vs SalesPerCapita', fontsize = 16)
+plt.ylabel('Sales Per Capita', fontsize = 12)
+plt.xlabel('Unemployment Rate', fontsize = 12)
+
+plt.savefig('unemp_sales.png')
+
+#EducationSpending vs SalesPerCapita
+plt.scatter(x = 'EducationSpending', y = 'SalesPerCapita', data = df, s = 100, alpha = 0.3, edgecolor = 'white')
+plt.title('Education Spending vs SalesPerCapita', fontsize = 16)
+plt.ylabel('Sales Per Capita', fontsize = 12)
+plt.xlabel('Education Spending', fontsize = 12)
+
+plt.savefig('education_sales.png')
+
+#ComputerSales vs SalesPerCapita
+plt.scatter(x = 'ComputerSales', y = 'SalesPerCapita', data = df, s = 100, alpha = 0.3, edgecolor = 'white')
+plt.title('Computer Sales vs SalesPerCapita', fontsize = 16)
+plt.ylabel('Sales Per Capita', fontsize = 12)
+plt.xlabel('Computer Sales', fontsize = 12)
+
+plt.savefig('comp_sales.png')
+
+# Building a Multiple Linear Regression Model to estimate Sales Per Capita
+X1_var = df[['ComputerSales','EducationSpending','UnemploymentRate','GDPperHead', 'Population']] # independent variables
+y_var = df['SalesPerCapita'] # dependent variable
+
+sm_X1_var = sm.add_constant(X1_var)
+mlr_model = sm.OLS(y_var, sm_X1_var)
+mlr_reg = mlr_model.fit()
+
+# The results
+
+print(cl(mlr_reg.summary(), attrs=['bold']))
+
+# when using a linear model to estimate Sales Per Capita, all the independent variables should be used. Still the model
+# is not compatible to estimate SPC in real life due to a low R-squared value.
+
+# Plotting relationships between the dependent variable Computer Sales and independent variables
+#Population vs ComputerSales
+plt.scatter(x = 'Population', y = 'ComputerSales', data = df, s = 100, alpha = 0.3, edgecolor = 'white')
+plt.title('Population vs ComputerSales', fontsize = 16)
+plt.ylabel('Computer Sales', fontsize = 12)
+plt.xlabel('Population', fontsize = 12)
+
+plt.savefig('population_csales.png')
+
+#EducationSpending vs ComputerSales
+plt.scatter(x = 'EducationSpending', y = 'ComputerSales', data = df, s = 100, alpha = 0.3, edgecolor = 'white')
+plt.title('EducationSpending vs ComputerSales', fontsize = 16)
+plt.ylabel('Computer Sales', fontsize = 12)
+plt.xlabel('Education Spending', fontsize = 12)
+
+plt.savefig('education_csales.png')
+
+#UnemploymentRate vs ComputerSales
+plt.scatter(x = 'UnemploymentRate', y = 'ComputerSales', data = df, s = 100, alpha = 0.3, edgecolor = 'white')
+plt.title('Unemployment Rate vs ComputerSales', fontsize = 16)
+plt.ylabel('Computer Sales', fontsize = 12)
+plt.xlabel('Unemployment Rate', fontsize = 12)
+
+plt.savefig('unemp_csales.png')
+
+#GDPperHead vs ComputerSales
+plt.scatter(x = 'GDPperHead', y = 'ComputerSales', data = df, s = 100, alpha = 0.3, edgecolor = 'white')
+plt.title('GDPperHead vs ComputerSales', fontsize = 16)
+plt.ylabel('Computer Sales', fontsize = 12)
+plt.xlabel('GDP per Head', fontsize = 12)
+
+plt.savefig('gdp_csales.png')
+
+#SalesPerCapita vs ComputerSales
+plt.scatter(x = 'SalesPerCapita', y = 'ComputerSales', data = df, s = 100, alpha = 0.3, edgecolor = 'white')
+plt.title('Sales Per Capita vs ComputerSales', fontsize = 16)
+plt.ylabel('Computer Sales', fontsize = 12)
+plt.xlabel('Sales Per Capita', fontsize = 12)
+
+plt.savefig('salespercapita_csales.png')
+
+#Building a Multiple Linear Regression Model to estimate Computer Sales
+X1_var = df[['SalesPerCapita','EducationSpending','UnemploymentRate','GDPperHead', 'Population']] # independent variables
+y_var = df['ComputerSales'] # dependent variable
+
+sm_X1_var = sm.add_constant(X1_var)
+mlr_model = sm.OLS(y_var, sm_X1_var)
+mlr_reg = mlr_model.fit()
+
+# The results
+
+print(cl(mlr_reg.summary(), attrs=['bold']))
+
+# The second model performed better that resulted with a higher R-squared value, but still not desirable for real life
+# cases. Not all the relationships between dependent variables and the independent variables are linear, however
+# to acquire a higher R-squared value, the existence of those independent variables in the model is imperative.
